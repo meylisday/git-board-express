@@ -3,6 +3,8 @@ import { json } from "body-parser";
 import mongoose from "mongoose";
 
 import { taskRouter } from "./routes/tasks";
+import { projectRouter } from "./routes/projects";
+import { userRouter } from "./routes/users";
 
 import cors from "cors";
 
@@ -15,6 +17,8 @@ app.use(cors());
 
 // Routes
 app.use(taskRouter);
+app.use(projectRouter);
+app.use(userRouter);
 
 mongoose.set('useFindAndModify', false);
 mongoose.connect(

@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 // Установим подключение по умолчанию
 const mongoDB = 'mongodb://127.0.0.1/git-board';
 mongoose.connect(mongoDB);
-console.log(mongoose.connection.readyState);
 // Позволим Mongoose использовать глобальную библиотеку промисов
 mongoose.Promise = global.Promise;
 // Получение подключения по умолчанию

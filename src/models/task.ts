@@ -8,7 +8,7 @@ enum TASK_STATUS {
 }
 
 
-interface ITask {
+export interface ITask {
   title: string;
   status?: TASK_STATUS;
 }
@@ -22,7 +22,7 @@ interface ITaskModel extends moongose.Model<ITaskDocument> {
     build(attr: ITask): ITaskDocument;
 }
 
-const taskScheme = new moongose.Schema({
+export const taskScheme = new moongose.Schema({
   title: {
     type: String,
     required: true,
@@ -39,9 +39,5 @@ taskScheme.statics.build = (attr: ITask) => {
 }
 
 const Task = moongose.model<any, ITaskModel>("Task", taskScheme);
-
-const build = (attr: ITask) => {
-    return new Task(attr);
-}
 
 export { Task }
