@@ -1,16 +1,25 @@
 import moongose from "mongoose";
 import { ITask, taskScheme } from "./task";
 
+export interface IUser {
+  id: string,
+  email: string,
+  name: string,
+  picture?: string
+}
+
 interface IProject {
   title: string;
   description?: string;
   tasks: ITask[];
+  users: IUser[];
 }
 
 interface IProjectDocument extends moongose.Document {
   title: string;
   description?: string;
   tasks: ITask[];
+  users: IUser[];
 }
 
 interface IProjectModel extends moongose.Model<IProjectDocument> {
@@ -27,6 +36,9 @@ const projectScheme = new moongose.Schema({
     required: false,
   },
   tasks: [taskScheme],
+  users: [{
+    type: String
+  }]
 });
 
 projectScheme.statics.build = (attr: IProject) => {

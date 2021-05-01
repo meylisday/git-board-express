@@ -21,8 +21,8 @@ router.put("/api/project/:id", async(req: Request, res: Response) => {
 
 router.post("/api/project", async (req: Request, res: Response) => {
   try {
-    const { title, description, tasks } = req.body;
-    const project = Project.build({ title, description, tasks });
+    const { title, description, tasks, users } = req.body;
+    const project = Project.build({ title, description, tasks, users });
     await project.save();
     return res.status(StatusCodes.CREATED).send(project);
   } catch (e) {
