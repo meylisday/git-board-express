@@ -4,9 +4,13 @@ import { Project } from "../models/project";
 
 const router = Router();
 
-router.get("/api/project", [], async (_req: Request, res: Response) => {
-  const task = await Project.find({});
-  return res.status(StatusCodes.OK).send(task);
+router.get("/api/project", [], async (req: Request, res: Response) => {
+  let query = {};
+  if (req.query?.search) {
+    query = { title: new RegExp(req.query.search as string, 'i') };
+  }
+  const project = await Project.find(query);
+  return res.status(StatusCodes.OK).send(project);
 });
 
 router.put("/api/project/:id", async(req: Request, res: Response) => {

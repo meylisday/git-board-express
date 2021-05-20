@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Project } from "../models/project";
 import { Task } from "../models/task";
+import mongoose from "mongoose";
+const ObjectId = mongoose.Types.ObjectId;
 
 const router = Router();
 
@@ -77,8 +79,18 @@ router.put("/api/project/:projectId/task/:id/delete", async (req: Request, res: 
 //get tasks by project
 router.get("/api/project/:projectId/task", [], async (req: Request, res: Response) => {
   const { projectId } = req.params;
-  const task = await Project.findById(projectId).select('tasks');
-  return res.status(StatusCodes.OK).send(task);
+  const query = {};
+  if (req.query?.search) {
+    query['tasks.title'] = new RegExp(req.query.search as string, 'i');
+  }
+  const task = await Project.aggregate([
+    { $match: { _id: ObjectId(projectId) } },
+    { $unwind: "$tasks" },
+    { $match: query },
+    { $project: { _id: 0, tasks: 1 }},
+    { $group: { _id: projectId, tasks: {$addToSet: "$tasks" }}},
+])
+  return res.status(StatusCodes.OK).send(task[0]);
 });
 
 

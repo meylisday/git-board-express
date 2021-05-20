@@ -1,25 +1,18 @@
 import moongose from "mongoose";
 import { ITask, taskScheme } from "./task";
 
-export interface IUser {
-  id: string,
-  email: string,
-  name: string,
-  picture?: string
-}
-
 interface IProject {
   title: string;
   description?: string;
   tasks: ITask[];
-  users: IUser[];
+  users: string[]
 }
 
 interface IProjectDocument extends moongose.Document {
   title: string;
   description?: string;
   tasks: ITask[];
-  users: IUser[];
+  users: string[];
 }
 
 interface IProjectModel extends moongose.Model<IProjectDocument> {
