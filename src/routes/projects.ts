@@ -5,12 +5,16 @@ import { Project } from "../models/project";
 const router = Router();
 
 router.get("/api/project", [], async (req: Request, res: Response) => {
-  let query = {};
-  if (req.query?.search) {
-    query = { title: new RegExp(req.query.search as string, 'i') };
+  try {
+    let query = {};
+    if (req.query?.search) {
+      query = { title: new RegExp(req.query.search as string, 'i') };
+    }
+    const project = await Project.find(query);
+    return res.status(StatusCodes.OK).send(project);
+  } catch (e) {
+    return res.status(StatusCodes.BAD_REQUEST).send(e);
   }
-  const project = await Project.find(query);
-  return res.status(StatusCodes.OK).send(project);
 });
 
 router.put("/api/project/:id", async(req: Request, res: Response) => {
@@ -33,7 +37,6 @@ router.post("/api/project", async (req: Request, res: Response) => {
     return res.status(StatusCodes.BAD_REQUEST).send(e);
   }
 });
-
 
 router.delete("/api/project/:id", async (req: Request, res: Response) => {
   const { id } = req.params;

@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 import express, { Application } from "express";
 import { json } from "body-parser";
 import mongoose from "mongoose";
@@ -21,18 +21,19 @@ app.use(taskRouter);
 app.use(projectRouter);
 app.use(userRouter);
 
-mongoose.set('useFindAndModify', false);
-mongoose.connect(
-  process.env.MONGO_DB_URL,
-  {
+mongoose.set("useFindAndModify", false);
+mongoose
+  .connect(process.env.MONGO_DB_URL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
-  },
-  () => {
+  })
+  .then(() => {
     console.log("connected to db");
-  }
-);
+  })
+  .catch((e) => {
+    console.error(e);
+  });
 
 app.listen(process.env.PORT, function () {
   console.log("App is listening on port 3000!");
