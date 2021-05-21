@@ -1,10 +1,7 @@
 {
     "version": 2,
     "name": "git-board-express",
-    "builds": [
-      { "src": "dist/server.js", "use": "@vercel/node" }
-    ],
     "routes": [
-      { "src": "/(.*)", "dest": "/dist/server.js" }
+      { "src": "/(.*)", "dest": "src/server.ts" }
     ]
   }
