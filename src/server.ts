@@ -1,3 +1,4 @@
+require('dotenv').config()
 import express, { Application } from "express";
 import { json } from "body-parser";
 import mongoose from "mongoose";
@@ -22,7 +23,7 @@ app.use(userRouter);
 
 mongoose.set('useFindAndModify', false);
 mongoose.connect(
-  "mongodb://localhost:27017/git-board",
+  process.env.MONGO_DB_URL,
   {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -33,6 +34,6 @@ mongoose.connect(
   }
 );
 
-app.listen(3000, function () {
+app.listen(process.env.PORT, function () {
   console.log("App is listening on port 3000!");
 });

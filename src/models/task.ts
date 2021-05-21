@@ -7,7 +7,6 @@ enum TASK_STATUS {
     DONE = "done"
 }
 
-
 export interface ITask {
   title: string;
   status?: TASK_STATUS;
