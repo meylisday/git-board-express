@@ -1,7 +1,5 @@
 {
     "version": 2,
     "name": "git-board-express",
-    "routes": [
-      { "src": "/(.*)", "dest": "src/server.ts" }
-    ]
+    "rewrites": [{ "source": "/api/(.*)", "destination": "/dist/server.ts" }]
   }
