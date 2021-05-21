@@ -1,5 +1,0 @@
-{
-    "version": 2,
-    "name": "git-board-express",
-    "rewrites": [{ "source": "/api/(.*)", "destination": "/dist/server.ts" }]
-  }
