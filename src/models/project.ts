@@ -1,11 +1,13 @@
 import moongose from "mongoose";
 import { ITask, taskScheme } from "./task";
+import { IRoom, roomScheme } from "./room";
 
 interface IProject {
   title: string;
   description?: string;
   tasks: ITask[];
-  users: string[]
+  users: string[],
+  rooms: IRoom[]
 }
 
 interface IProjectDocument extends moongose.Document {
@@ -13,6 +15,7 @@ interface IProjectDocument extends moongose.Document {
   description?: string;
   tasks: ITask[];
   users: string[];
+  rooms: IRoom[];
 }
 
 interface IProjectModel extends moongose.Model<IProjectDocument> {
@@ -31,7 +34,8 @@ const projectScheme = new moongose.Schema({
   tasks: [taskScheme],
   users: [{
     type: String
-  }]
+  }],
+  rooms: [roomScheme],
 });
 
 projectScheme.statics.build = (attr: IProject) => {

@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 import express, { Application } from "express";
 import { json } from "body-parser";
 import mongoose from "mongoose";
@@ -6,6 +7,7 @@ import mongoose from "mongoose";
 import { taskRouter } from "./routes/tasks";
 import { projectRouter } from "./routes/projects";
 import { userRouter } from "./routes/users";
+import { roomRouter } from "./routes/rooms";
 
 import cors from "cors";
 
@@ -13,13 +15,13 @@ import cors from "cors";
 const app: Application = express();
 
 app.use(json());
-
 app.use(cors());
 
 // Routes
 app.use(taskRouter);
 app.use(projectRouter);
 app.use(userRouter);
+app.use(roomRouter);
 
 mongoose.set("useFindAndModify", false);
 mongoose
