@@ -16,7 +16,6 @@ router.post(
   
         const room = Room.build({ ...req.body });
         const project = await Project.findById(projectId);
-        console.log(project);
   
         project.rooms.push(room);
   
