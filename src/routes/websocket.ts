@@ -33,12 +33,12 @@ export function handleWebSocketConnected(this: WebSocket.Server, socket: Extende
 
   socket.on('message', (data: string) => {
     try {    
-      const { type, roomId, peerId } = JSON.parse(data)
+      const { type, roomId, peerId, ...rest } = JSON.parse(data)
 
       if (type === 'join') {
         Object.assign(socket, { roomId, peerId })
 
-        broadcast.call(socket, clients, JSON.stringify({ type: 'connected', roomId, peerId }))
+        broadcast.call(socket, clients, JSON.stringify({ type: 'connected', roomId, peerId, ...rest }))
       }
     } catch (e) {
       console.error(e);
