@@ -34,6 +34,14 @@ export const taskScheme = new moongose.Schema({
     type: String,
     required: true,
   },
+  assignee: {
+    type: String,
+    required: false,
+  },
+  createdBy: {
+    type: String,
+    required: false,
+  },
   description: {
     type: String,
     required: false,
