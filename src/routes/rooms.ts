@@ -29,9 +29,14 @@ router.post(
 
 //delete room
 router.put("/api/project/:projectId/room/:id/delete", async (req: Request, res: Response) => {
-    const { id, projectId } = req.params;
-    const project = await Project.findOneAndUpdate({_id: projectId}, {"$pull": { "rooms": { _id: id } } }, { new: true })
-    return res.status(StatusCodes.OK).send(project);
+    try {
+      const { id, projectId } = req.params;
+      const project = await Project.findOneAndUpdate({_id: projectId}, {"$pull": { "rooms": { _id: id } } }, { new: true })
+      
+      return res.status(StatusCodes.OK).send({});
+    } catch (e) {
+      return res.status(StatusCodes.BAD_REQUEST).send(e);
+    }
   });
   
 

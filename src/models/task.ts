@@ -8,12 +8,16 @@ enum TASK_STATUS {
 }
 
 export interface ITask {
+  slug: string
   title: string;
+  description?: string;
   status?: TASK_STATUS;
 }
 
 interface ITaskDocument extends moongose.Document {
+    slug: string
     title: string;
+    description?: string;
     status?: TASK_STATUS;
 }
 
@@ -22,9 +26,17 @@ interface ITaskModel extends moongose.Model<ITaskDocument> {
 }
 
 export const taskScheme = new moongose.Schema({
+  slug: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
+  },
+  description: {
+    type: String,
+    required: false,
   },
   status: {
     type: String,

@@ -7,6 +7,13 @@ const ObjectId = mongoose.Types.ObjectId;
 
 const router = Router();
 
+const generateSlug = (title: string, count: number) => {
+  return `${title
+    .replace(/\s+/g, ' ')
+    .split(' ')
+    .map(part => part.charAt(0))
+    .join('')}-${count + 1}`;
+}
 
 //update task
 router.put(
@@ -27,7 +34,6 @@ router.put(
   }
 );
 
-
 //create task
 router.post(
   "/api/project/:projectId/task",
@@ -35,8 +41,8 @@ router.post(
     try {
       const { projectId } = req.params;
 
-      const task = Task.build({ ...req.body });
       const project = await Project.findById(projectId);
+      const task = Task.build({ slug: generateSlug(project.title, project.tasks.length), ...req.body });
 
       project.tasks.push(task);
 
