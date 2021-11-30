@@ -7,7 +7,6 @@ const router = Router();
 
 router.get("/api/user", [], async (_req: Request, res: Response) => {
   try {
-    // const query = `user_id:(${["google-oauth2|112465467334382843807"].join(' OR ')})`
     const users = await auth0.getUsers();
 
     return res.status(StatusCodes.OK).send(users);
