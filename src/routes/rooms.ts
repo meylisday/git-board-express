@@ -38,6 +38,16 @@ router.put("/api/project/:projectId/room/:id/delete", async (req: Request, res: 
       return res.status(StatusCodes.BAD_REQUEST).send(e);
     }
   });
+
+  router.get("/api/project/:projectId/room/:id", async (req: Request, res: Response) => {
+    try {
+      const { id, projectId } = req.params;
+      const room = (await Project.findOne({_id: projectId})).rooms.find(_id => id);
+      return res.status(StatusCodes.OK).send(room);
+    } catch (e) {
+      return res.status(StatusCodes.BAD_REQUEST).send(e);
+    }
+  });
   
 
 //get rooms by project
