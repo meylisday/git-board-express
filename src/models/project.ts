@@ -44,4 +44,4 @@ projectScheme.statics.build = (attr: IProject) => {
 
 const Project = moongose.model<any, IProjectModel>("Project", projectScheme);
 
-export { Project };
+export { Project, IProject, IProjectModel };
