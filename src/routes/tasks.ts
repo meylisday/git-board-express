@@ -17,29 +17,38 @@ const generateSlug = (title: string, count: number) => {
     .join("")}-${count + 1}`;
 };
 
-const sortTasksByOrder = async (Model: IProjectModel, projectId: string, id: string, order: number = 0) => {
+const sortTasksByOrder = async (
+  Model: IProjectModel,
+  projectId: string,
+  id: string,
+  order: number = 0
+) => {
   const tasks = (await Model.findOne({ _id: projectId })).tasks;
 
-  const orderedTasks = Object.values(groupBy(tasks, 'status')).flatMap((groupedTasks: ITask[]) => {
-    const taskIndex = groupedTasks.findIndex((document) => document._id.toString() === id);
+  const orderedTasks = Object.values(groupBy(tasks, "status")).flatMap(
+    (groupedTasks: ITask[]) => {
+      const taskIndex = groupedTasks.findIndex(
+        (document) => document._id.toString() === id
+      );
 
-    if (taskIndex >= 0) {
-      groupedTasks.splice(order, 0, groupedTasks.splice(taskIndex, 1)[0])
+      if (taskIndex >= 0) {
+        groupedTasks.splice(order, 0, groupedTasks.splice(taskIndex, 1)[0]);
+      }
+
+      return groupedTasks.map((task, i) => Object.assign(task, { order: i }));
     }
-
-    return groupedTasks.map((task, i) => Object.assign(task, { order: i }))
-  })
+  );
 
   return await Project.findOneAndUpdate(
     { _id: projectId },
     {
       $set: {
         tasks: orderedTasks,
-      }
+      },
     },
     { new: true }
   );
-}
+};
 
 //update task
 router.put(
@@ -74,6 +83,7 @@ router.post(
       const task = Task.build({
         slug: generateSlug(project.title, project.tasks.length),
         order: 0,
+        comments: [],
         ...req.body,
       });
 
@@ -107,7 +117,12 @@ router.put(
         { new: true }
       );
 
-      const updatedTasks = await sortTasksByOrder(Project, projectId, id, +req.body.order);
+      const updatedTasks = await sortTasksByOrder(
+        Project,
+        projectId,
+        id,
+        +req.body.order
+      );
 
       return res.status(StatusCodes.OK).send(updatedTasks);
     } catch (e) {
@@ -158,5 +173,68 @@ router.get("/api/project/task", [], async (req: Request, res: Response) => {
 
   return res.status(StatusCodes.OK).send(task);
 });
+
+
+//add new comment
+router.put(
+  "/api/project/:projectId/task/:id/comment",
+  async (req: Request, res: Response) => {
+    try {
+      const { id, projectId } = req.params;
+
+      const t = await Project.findOneAndUpdate(
+        { _id: projectId, "tasks._id": id },
+        {
+          $push: {
+            "tasks.$.comments": {
+              ...req.body,
+              createdAt: Date.now(),
+            },
+          },
+        },
+        { new: true }
+      );
+
+      return res.status(StatusCodes.OK).send(t);
+    } catch (e) {
+      return res.status(StatusCodes.BAD_REQUEST).send(e);
+    }
+  }
+);
+//delete comment
+router.put(
+  "/api/project/:projectId/task/:taskId/comment/:commentId/delete",
+  async (req: Request, res: Response) => {
+    const { projectId, taskId, commentId } = req.params;
+    try {
+      const project = await Project.findOneAndUpdate(
+        { _id: projectId },
+        { $pull: { "tasks.$[].comments": {_id: commentId } } },
+        { new: true }
+      );
+      return res.status(StatusCodes.OK).send(project);
+    } catch (e) {
+      return res.status(StatusCodes.BAD_REQUEST).send(e);
+    }
+  }
+);
+
+router.put(
+  "/api/project/:projectId/task/:taskId/comment/:commentId",
+  async (req: Request, res: Response) => {
+    try {
+      const { projectId, taskId, commentId } = req.params;
+
+      const task = await Project.findOneAndUpdate(
+        { _id: projectId, "tasks._id": taskId },
+        { $set: { "tasks.$[].comments.$[elem].text": req.body.text } },
+        { arrayFilters: [ { "elem._id": commentId} ] }
+      );
+      return res.status(StatusCodes.OK).send(task);
+    } catch (e) {
+      return res.status(StatusCodes.BAD_REQUEST).send(e);
+    }
+  }
+);
 
 export { router as taskRouter };

@@ -1,4 +1,5 @@
 import moongose from "mongoose";
+import { roomScheme } from "./room";
 
 enum TASK_STATUS {
     BACKLOG = "backlog", 
@@ -6,6 +7,26 @@ enum TASK_STATUS {
     REVIEW = "review", 
     DONE = "done"
 }
+interface IComment {
+  authorId: string;
+  text: string;
+  createdAt: number;
+}
+
+export const commentScheme = new moongose.Schema({
+  authorId: {
+    type: String,
+    required: true,
+  },
+  text: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Number,
+    required: true,
+  }
+});
 
 export interface ITask {
   _id?: string;
@@ -14,6 +35,7 @@ export interface ITask {
   description?: string;
   status?: TASK_STATUS;
   order: number;
+  comments: IComment[];
 }
 
 interface ITaskDocument extends moongose.Document {
@@ -23,6 +45,7 @@ interface ITaskDocument extends moongose.Document {
   description?: string;
   status?: TASK_STATUS;
   order: number;
+  comments: IComment[];
 }
 
 interface ITaskModel extends moongose.Model<ITaskDocument> {
@@ -59,6 +82,7 @@ export const taskScheme = new moongose.Schema({
     enum: Object.values(TASK_STATUS),
     default: TASK_STATUS.BACKLOG
   },
+  comments: [commentScheme]
 });
 
 taskScheme.statics.build = (attr: ITask) => {
